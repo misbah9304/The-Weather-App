@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel='stylesheet' href='weatherapp.css'>
+</head>
+
+<body>
+    <div class='weather'>
+        <div class="search">
+            <input type='text' placeholder="Enter city name" spellcheck="false">
+            <button><img
+                    src='https://static.vecteezy.com/system/resources/thumbnails/009/652/218/small_2x/magnifying-glass-icon-isolated-on-white-background-search-illustration-vector.jpg'
+                    width='25px'></button>
+        </div>
+        <div class="error">
+            <p>Please enter the right city</p>
+        </div>
+        <div class="weathcard">
+            <img src="https://cdn-icons-png.flaticon.com/512/7084/7084512.png" class="weather-icon">
+            <p class="type">Raining</p>
+            <h1 class="temp">93F</h1>
+            <h2 class="city">Dallas</h2>
+            <div class="details">
+                <div class="humidity">
+                    <img src="https://cdn-icons-png.flaticon.com/512/9342/9342439.png" class="humid">
+                    <p class='humidd'>
+                        <bold>50 % (Humidity)</bold>
+                    </p>
+                </div>
+                <div class="wind">
+                    <img src="https://cdn-icons-png.flaticon.com/512/6974/6974853.png" class="windy">
+                    <p class='windd'>15 m/h (wind speed)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '8df4b083e50903fc55299b9e2032f18e';
+        const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?&units=imperial&q=';
+
+        const searchbox = document.querySelector('.search input');
+        const searchbtn = document.querySelector('.search button');
+        const weatherIcon = document.querySelector('.weather-icon');
+
+        async function checkweather(city) {
+            const apiKey = '8df4b083e50903fc55299b9e2032f18e';
+            const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+            if (response.status == 404) {
+                document.querySelector('.error').style.display = 'block';
+                document.querySelector('.weathcard').style.display = 'none';
+            }
+            else {
+                var data = await response.json();
+
+                console.log(data);
+
+                document.querySelector('.city').innerHTML = data.name;
+                document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + 'F';
+                document.querySelector('.humidd').innerHTML = data.main.humidity + '% (Humidity)';
+                document.querySelector('.windd').innerHTML = data.wind.speed + 'm/h (Wind Speed)';
+
+                if (data.weather[0].main == 'Rain') {
+                    weatherIcon.src = 'https://freesvg.org/img/sivvus_weather_symbols_4.png';
+                    document.querySelector('.type').innerHTML = 'Rainy';
+                }
+                else if (data.weather[0].main == 'Clear') {
+                    weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/7084/7084512.png';
+                    document.querySelector('.type').innerHTML == 'Clear Sky';
+                }
+                else if (data.weather[0].main == 'Clouds') {
+                    weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/11742/11742562.png';
+                    document.querySelector('.type').innerHTML = 'Cloudy';
+                }
+                else if (data.weather[0].main == 'Drizzle') {
+                    weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/4837/4837678.png';
+                    document.querySelector('.type').innerHTML = 'Drizzle';
+                }
+                else if (data.weather[0].main == 'Thunderstorm') {
+                    weatherIcon.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Weather-rain-thunderstorm.svg/640px-Weather-rain-thunderstorm.svg.png';
+                    document.querySelector('.type').innerHTML = 'Thunderstorm';
+                }
+                else if (data.weather[0].main == 'Mist') {
+                    weatherIcon.src = 'https://cdn-icons-png.flaticon.com/512/4005/4005901.png';
+                    document.querySelector('.type').innerHTML = 'Mist';
+                }
+
+                
+                document.querySelector('.weathcard').style.display = 'block';
+                document.querySelector('.error').style.display = 'none';
+            }
+
+        }
+        searchbtn.addEventListener('click', () => {
+            checkweather(searchbox.value);
+        });
+
+
+
+    </script>
+</body>
+
+</html>
